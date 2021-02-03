@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Card = require('../models/card');
 
 const getCards = (req, res) => {
@@ -9,9 +10,17 @@ const getCards = (req, res) => {
 const addCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id; // _id станет доступен
-  Card.create(owner, { name, link }, { new: true, runValidators: true })
-    .then((card) => res.send({ data: card }))
-    .catch(() => res.status(400).send({ message: 'На сервере произошла ошибка' }));
+  Card.create({ name, link, owner })
+    .orFail(() => {
+      throw new Error('404');
+    })
+    .then((card) => res.send({ card }))
+    .catch((err) => {
+      if (err instanceof mongoose.CastError) {
+        return res.status(400).send({ message: 'Передан не валидный id' });
+      }
+      return res.status(500).send({ message: 'На сервере произошла ошибка' });
+    });
 };
 
 const deleteCard = (req, res) => {
@@ -37,7 +46,7 @@ const addLikeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.send({ card }))
     .catch((err) => {
       if (err.message === '404') {
         return res.status(404).send({ message: 'Такой карточки не существует' });
