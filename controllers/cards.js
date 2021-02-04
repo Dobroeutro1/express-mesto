@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const Card = require('../models/card');
 
 const getCards = (req, res) => {
@@ -16,7 +15,10 @@ const addCard = (req, res) => {
     })
     .then((card) => res.send({ card }))
     .catch((err) => {
-      if (err instanceof mongoose.CastError) {
+      if (err.message === '404') {
+        return res.status(404).send({ message: 'Введите корректные данные' });
+      }
+      if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Передан не валидный id' });
       }
       return res.status(500).send({ message: 'На сервере произошла ошибка' });
@@ -30,10 +32,10 @@ const deleteCard = (req, res) => {
         return res.status(404).send({ message: 'Такой карточки не существует' });
       }
 
-      res.send({ data: card });
+      res.send({ card });
     })
     .catch((err) => {
-      if (err instanceof mongoose.CastError) {
+      if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Передан не валидный id' });
       }
       return res.status(500).send({ message: 'На сервере произошла ошибка' });
@@ -46,12 +48,15 @@ const addLikeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send({ card }))
-    .catch((err) => {
-      if (err.message === '404') {
+    .then((card) => {
+      if (!card) {
         return res.status(404).send({ message: 'Такой карточки не существует' });
       }
-      if (err instanceof mongoose.CastError) {
+
+      res.send({ card });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Нет карточки с таким id' });
       }
       return res.status(500).send({ message: 'На сервере произошла ошибка' });
@@ -64,12 +69,15 @@ const deleteLikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      if (err.message === '404') {
+    .then((card) => {
+      if (!card) {
         return res.status(404).send({ message: 'Такой карточки не существует' });
       }
-      if (err instanceof mongoose.CastError) {
+
+      res.send({ card });
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Нет карточки с таким id' });
       }
       return res.status(500).send({ message: 'На сервере произошла ошибка' });
