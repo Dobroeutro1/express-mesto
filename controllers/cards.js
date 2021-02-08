@@ -10,18 +10,12 @@ const addCard = (req, res) => {
   const { name, link } = req.body;
   const owner = req.user._id; // _id станет доступен
   Card.create({ name, link, owner })
-    .orFail(() => {
-      throw new Error('404');
-    })
     .then((card) => res.send({ card }))
     .catch((err) => {
-      if (err.message === '404') {
-        return res.status(404).send({ message: 'Введите корректные данные' });
-      }
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Передан не валидный id' });
+        return res.status(400).send({ message: 'Неверно введена ссылка на изображение' });
       }
-      return res.status(500).send({ message: 'На сервере произошла ошибка' });
+      res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 

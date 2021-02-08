@@ -25,18 +25,12 @@ const getUsersId = (req, res) => {
 };
 
 const addUser = (req, res) => {
-  const { name, link } = req.body;
-  User.create({ name, link })
-    .orFail(() => {
-      throw new Error('404');
-    })
+  const { name, about, avatar } = req.body;
+  User.create({ name, about, avatar })
     .then((user) => res.send({ user }))
     .catch((err) => {
-      if (err.message === '404') {
-        return res.status(404).send({ message: 'Введите корректные данные' });
-      }
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Передан не валидный id' });
+        return res.status(400).send({ message: 'Неверно введена ссылка на изображение' });
       }
       res.status(500).send({ message: 'Произошла ошибка при отправке данных' });
     });
@@ -47,11 +41,14 @@ const updateProfile = (req, res) => {
   User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Введите корректные данные' });
+        return res.status(404).send({ message: 'Пользователь не найден' });
       }
       res.send({ data: user });
     })
     .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Неверно введена ссылка на изображение' });
+      }
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Передан не валидный id' });
       }
@@ -64,11 +61,14 @@ const updateAvatar = (req, res) => {
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        return res.status(404).send({ message: 'Введите корректные данные' });
+        return res.status(404).send({ message: 'Пользователь не найден' });
       }
       res.send({ data: user });
     })
     .catch((err) => {
+      if (err.name === 'ValidationError') {
+        return res.status(400).send({ message: 'Неверно введена ссылка на изображение' });
+      }
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Передан не валидный id' });
       }
