@@ -27,10 +27,10 @@ const getUsersId = (req, res) => {
 const addUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.send({ user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Неверно введена ссылка на изображение' });
+        return res.status(400).send({ message: 'Проверьте правильность введеных данных' });
       }
       res.status(500).send({ message: 'Произошла ошибка при отправке данных' });
     });
@@ -43,11 +43,11 @@ const updateProfile = (req, res) => {
       if (!user) {
         return res.status(404).send({ message: 'Пользователь не найден' });
       }
-      res.send({ data: user });
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Неверно введена ссылка на изображение' });
+        return res.status(400).send({ message: 'Проверьте правильность введеных данных' });
       }
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Передан не валидный id' });
@@ -63,11 +63,11 @@ const updateAvatar = (req, res) => {
       if (!user) {
         return res.status(404).send({ message: 'Пользователь не найден' });
       }
-      res.send({ data: user });
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(400).send({ message: 'Неверно введена ссылка на изображение' });
+        return res.status(400).send({ message: 'Проверьте правильность введеных данных' });
       }
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Передан не валидный id' });
