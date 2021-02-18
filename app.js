@@ -11,8 +11,6 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useCreateIndex: true,
   useFindAndModify: false,
 });
-mongoose.connection.on('open', () => console.log('DB connected!'));
-mongoose.connection.on('error', () => console.log('Error connected!'));
 
 app.use((req, res, next) => {
   req.user = {

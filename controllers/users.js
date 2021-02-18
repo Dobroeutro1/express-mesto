@@ -20,7 +20,7 @@ const getUsersId = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Передан не валидный id' });
       }
-      res.status(500).send({ message: 'Нет пользователя с таким id' });
+      return res.status(500).send({ message: 'Нет пользователя с таким id' });
     });
 };
 
@@ -32,7 +32,7 @@ const addUser = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Проверьте правильность введеных данных' });
       }
-      res.status(500).send({ message: 'Произошла ошибка при отправке данных' });
+      return res.status(500).send({ message: 'Произошла ошибка при отправке данных' });
     });
 };
 
@@ -43,7 +43,7 @@ const updateProfile = (req, res) => {
       if (!user) {
         return res.status(404).send({ message: 'Пользователь не найден' });
       }
-      res.send(user);
+      return res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -52,7 +52,7 @@ const updateProfile = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Передан не валидный id' });
       }
-      res.status(500).send({ message: 'Произошла ошибка при отправке данных' });
+      return res.status(500).send({ message: 'Произошла ошибка при отправке данных' });
     });
 };
 
@@ -63,7 +63,7 @@ const updateAvatar = (req, res) => {
       if (!user) {
         return res.status(404).send({ message: 'Пользователь не найден' });
       }
-      res.send(user);
+      return res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -72,7 +72,7 @@ const updateAvatar = (req, res) => {
       if (err.name === 'CastError') {
         return res.status(400).send({ message: 'Передан не валидный id' });
       }
-      res.status(500).send({ message: 'Произошла ошибка при отправке данных' });
+      return res.status(500).send({ message: 'Произошла ошибка при отправке данных' });
     });
 };
 

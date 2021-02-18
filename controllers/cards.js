@@ -15,7 +15,7 @@ const addCard = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(400).send({ message: 'Проверьте правильность введеных данных' });
       }
-      res.status(500).send({ message: 'На сервере произошла ошибка' });
+      return res.status(500).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -26,7 +26,7 @@ const deleteCard = (req, res) => {
         return res.status(404).send({ message: 'Такой карточки не существует' });
       }
 
-      res.send(card);
+      return res.send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -47,7 +47,7 @@ const addLikeCard = (req, res) => {
         return res.status(404).send({ message: 'Такой карточки не существует' });
       }
 
-      res.send(card);
+      return res.send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -68,7 +68,7 @@ const deleteLikeCard = (req, res) => {
         return res.status(404).send({ message: 'Такой карточки не существует' });
       }
 
-      res.send(card);
+      return res.send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
